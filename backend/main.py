@@ -5,6 +5,8 @@ Lumeval Backend: A FastAPI server that runs DeepEval evaluations on LLM-based pr
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from evaluators.matchforge_evaluator import run_matchforge_evaluation
+from evaluators.scoute_evaluator import run_scoute_evaluation
 
 app = FastAPI(title="Lumeval API")
 
@@ -22,6 +24,14 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "healthy"}
+
+@app.get("/evaluate/matchforge")
+def matchforge_evaluation():
+    return run_matchforge_evaluation()
+
+@app.get("/evaluate/scoute")
+def scoute_evaluation():
+    return run_scoute_evaluation()
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

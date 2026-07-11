@@ -1,0 +1,81 @@
+"""
+MatchForge Evaluator: It runs DeepEval metrics on MatchForge's skills analyzer and resume rewriter outputs to assess hallucination, faithfulness, and answer relevancy metrics.
+"""
+
+from deepeval import evaluate
+from deepeval.metrics import HallucinationMetric, FaithfulnessMetric, AnswerRelevancyMetric
+from deepeval.test_case import LLMTestCase
+from test_cases.matchforge_cases import RESUME_TEXT, JOB_DESCRIPTION, SKILLS_GAP_OUTPUT, REWRITTEN_RESUME
+
+def evaluate_skills_analyzer() -> dict:
+    """
+    Evaluates MatchForge's skills analyzer for answer relevancy. Checks whether the skills gap analysis is relevant to the job description.
+
+    Returns:
+        dict: Metric name, score, and pass/fail result.
+    """
+    
+    test_case = LLMTestCase(
+        input=f"Resume: {RESUME_TEXT}\nJob Description: {JOB_DESCRIPTION}",
+        actual_output=SKILLS_GAP_OUTPUT
+    )
+
+    metric = AnswerRelevancyMetric(threshold=0.7)
+    metric.measure(test_case)
+
+    return{
+        "metric": "Answer Relevancy",
+        "score": metric.score,
+        "passed": metric.score >= 0.7,
+        "reason": metric.reason
+    }
+
+def evaluate_resume_rewriter() -> dict:
+    """
+    Evaluates MatchForge's resume rewriter for hallucination. Checks if the rewritten resume contains only the information present in the original resume and does not fabricate any information.
+
+    Returns:
+        dict: Metric name, score, and pass/fail result.
+    """
+
+    test_case = LLMTestCase(
+        input=RESUME_TEXT,
+        actual_output=REWRITTEN_RESUME,
+        context=[RESUME_TEXT]
+    )
+
+    metric = HallucinationMetric(threshold=0.5)
+    metric.measure(test_case)
+
+    return{
+        "metric": "Hallucination",
+        "score": metric.score,
+        "passed": metric.score <= 0.5,
+        "reason": metric.reason
+    }
+
+def run_matchforge_evaluation() -> dict:
+    """
+    Runs all evaluations for MatchForge and return combined results.
+
+    Returns:
+        dict: Dictionary containing the results of all MatchForge evaluations.
+    """
+
+    return {
+        "project": "MatchForge",
+        "evaluations": [
+            evaluate_skills_analyzer(),
+            evaluate_resume_rewriter()
+        ]
+    }
+
+#Code for unit testing the evaluator
+if __name__ == "__main__":
+    results = run_matchforge_evaluation()
+    print(f"Project: {results['project']}")
+    for eval in results['evaluations']:
+        print(f"\nMetric: {eval['metric']}")
+        print(f"Score: {eval['score']}")
+        print(f"Passed: {eval['passed']}")
+        print(f"Reason: {eval['reason']}")

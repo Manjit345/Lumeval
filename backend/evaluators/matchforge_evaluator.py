@@ -2,8 +2,7 @@
 MatchForge Evaluator: It runs DeepEval metrics on MatchForge's skills analyzer and resume rewriter outputs to assess hallucination, faithfulness, and answer relevancy metrics.
 """
 
-from deepeval import evaluate
-from deepeval.metrics import HallucinationMetric, FaithfulnessMetric, AnswerRelevancyMetric
+from deepeval.metrics import HallucinationMetric, AnswerRelevancyMetric
 from deepeval.test_case import LLMTestCase
 from test_cases.matchforge_cases import RESUME_TEXT, JOB_DESCRIPTION, SKILLS_GAP_OUTPUT, REWRITTEN_RESUME
 
@@ -56,7 +55,7 @@ def evaluate_resume_rewriter() -> dict:
 
 def run_matchforge_evaluation() -> dict:
     """
-    Runs all evaluations for MatchForge and return combined results.
+    Runs all evaluations for MatchForge and returns combined results.
 
     Returns:
         dict: Dictionary containing the results of all MatchForge evaluations.

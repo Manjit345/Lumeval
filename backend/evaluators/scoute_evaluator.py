@@ -5,6 +5,7 @@ Scoute Evaluator: It runs DeepEval metrics on Scoute's synthesizer output to ass
 from deepeval.metrics import HallucinationMetric, FaithfulnessMetric
 from deepeval.test_case import LLMTestCase
 from test_cases.scoute_cases import RESEARCH_TOPIC, RESEARCH_REPORT, RESEARCH_SOURCES
+import time
 
 def evaluate_faithfulness() -> dict:
     """
@@ -67,12 +68,13 @@ def run_scoute_evaluation() -> dict:
         dict: Dictionary containing the results of all Scoute evaluations.
     """
 
+    results = []
+    results.append(evaluate_faithfulness())
+    time.sleep(15)  # wait 15 seconds between metrics
+    results.append(evaluate_hallucination())
     return {
         "project": "Scoute",
-        "evaluations": [
-            evaluate_faithfulness(),
-            evaluate_hallucination()
-        ]
+        "evaluations": results
     }
 
 #Code for unit testing the evaluator

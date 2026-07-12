@@ -5,6 +5,7 @@ MatchForge Evaluator: It runs DeepEval metrics on MatchForge's skills analyzer a
 from deepeval.metrics import HallucinationMetric, AnswerRelevancyMetric
 from deepeval.test_case import LLMTestCase
 from test_cases.matchforge_cases import RESUME_TEXT, JOB_DESCRIPTION, SKILLS_GAP_OUTPUT, REWRITTEN_RESUME
+import time
 
 def evaluate_skills_analyzer() -> dict:
     """
@@ -60,13 +61,14 @@ def run_matchforge_evaluation() -> dict:
     Returns:
         dict: Dictionary containing the results of all MatchForge evaluations.
     """
-
+    
+    results = []
+    results.append(evaluate_skills_analyzer())
+    time.sleep(15)  # wait 15 seconds between metrics
+    results.append(evaluate_resume_rewriter())
     return {
         "project": "MatchForge",
-        "evaluations": [
-            evaluate_skills_analyzer(),
-            evaluate_resume_rewriter()
-        ]
+        "evaluations": results
     }
 
 #Code for unit testing the evaluator

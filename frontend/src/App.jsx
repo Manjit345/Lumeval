@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import MetricCard from "./components/MetricCard"
 
-const API_BASE = "http://localhost:8000"
+const API_BASE = "https://lumeval.onrender.com"
 
 function App() {
   const [selectedProject, setSelectedProject] = useState(null)

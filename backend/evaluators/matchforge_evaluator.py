@@ -5,7 +5,10 @@ MatchForge Evaluator: It runs DeepEval metrics on MatchForge's skills analyzer a
 from deepeval.metrics import HallucinationMetric, AnswerRelevancyMetric
 from deepeval.test_case import LLMTestCase
 from test_cases.matchforge_cases import RESUME_TEXT, JOB_DESCRIPTION, SKILLS_GAP_OUTPUT, REWRITTEN_RESUME
+from deepeval.models import GeminiModel
 import time
+
+gemini = GeminiModel(model="gemini-3.5-flash")
 
 def evaluate_skills_analyzer() -> dict:
     """
@@ -20,7 +23,7 @@ def evaluate_skills_analyzer() -> dict:
         actual_output=SKILLS_GAP_OUTPUT
     )
 
-    metric = AnswerRelevancyMetric(threshold=0.7)
+    metric = AnswerRelevancyMetric(threshold=0.7, model=gemini)
     metric.measure(test_case)
 
     return{
@@ -44,7 +47,7 @@ def evaluate_resume_rewriter() -> dict:
         context=[RESUME_TEXT]
     )
 
-    metric = HallucinationMetric(threshold=0.5)
+    metric = HallucinationMetric(threshold=0.5, model=gemini)
     metric.measure(test_case)
 
     return{

@@ -5,7 +5,10 @@ Scoute Evaluator: It runs DeepEval metrics on Scoute's synthesizer output to ass
 from deepeval.metrics import HallucinationMetric, FaithfulnessMetric
 from deepeval.test_case import LLMTestCase
 from test_cases.scoute_cases import RESEARCH_TOPIC, RESEARCH_REPORT, RESEARCH_SOURCES
+from deepeval.models import GeminiModel
 import time
+
+gemini = GeminiModel(model="gemini-3.5-flash")
 
 def evaluate_faithfulness() -> dict:
     """
@@ -24,7 +27,7 @@ def evaluate_faithfulness() -> dict:
         retrieval_context=retrieval_context
     )
 
-    metric = FaithfulnessMetric(threshold=0.7)
+    metric = FaithfulnessMetric(threshold=0.7, model=gemini)
     metric.measure(test_case)
 
     return{
@@ -50,7 +53,7 @@ def evaluate_hallucination() -> dict:
         context=retrieval_context
     )
 
-    metric = HallucinationMetric(threshold=0.5)
+    metric = HallucinationMetric(threshold=0.5, model=gemini)
     metric.measure(test_case)
 
     return{
